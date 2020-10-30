@@ -2,8 +2,10 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-
-createApp(App)
+import { initAntd } from "./antd";
+const app = createApp(App)
   .use(store)
-  .use(router)
-  .mount("#app");
+  .use(router);
+
+initAntd(app);
+app.mount("#app");
