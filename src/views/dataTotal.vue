@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    dataTotal
+    dataTotal222
   </div>
 </template>
 
