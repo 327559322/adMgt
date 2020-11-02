@@ -1,4 +1,16 @@
-import { Button, Layout, Menu, Table, Modal } from "ant-design-vue";
+import {
+  Button,
+  Layout,
+  Menu,
+  Table,
+  Modal,
+  Form,
+  Input,
+  Upload,
+  DatePicker,
+  Select,
+  message
+} from "ant-design-vue";
 
 export function initAntd(app) {
   app
@@ -6,5 +18,12 @@ export function initAntd(app) {
     .use(Table)
     .use(Layout)
     .use(Modal)
+    .use(Form)
+    .use(Input)
+    .use(Upload)
+    .use(DatePicker)
+    .use(Select)
+    .use(message)
     .use(Menu);
+  app.config.globalProperties.$message = message;
 }
