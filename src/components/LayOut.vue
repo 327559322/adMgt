@@ -54,8 +54,13 @@ import {
 } from "@ant-design/icons-vue";
 import { routes } from "../router";
 import router from "../router";
-import { computed, ref, reactive, toRefs } from "vue";
+import { computed, ref, reactive, toRefs, provide } from "vue";
 import { useRoute } from "vue-router";
+let route;
+const data = reactive({
+  collapsed: false,
+  selectedKeys: ""
+});
 export default {
   components: {
     UserOutlined,
@@ -64,17 +69,10 @@ export default {
     MenuUnfoldOutlined,
     MenuFoldOutlined
   },
-  data() {
-    return {
-      collapsed: false
-    };
-  },
   setup() {
-    const route = useRoute();
-    const data = reactive({
-      collapsed: false,
-      selectedKeys: ref([route.name])
-    });
+    route = useRoute();
+    provide("changeMenuRoute", changeMenuRoute);
+    data.selectedKeys = [route.name];
     const routeList = computed(() => {
       return routes[0].children.filter(item => {
         if (item.name === "root") {
@@ -93,6 +91,9 @@ export default {
 };
 function jumpToUrl({ key }) {
   router.push({ name: key });
+}
+function changeMenuRoute(name) {
+  data.selectedKeys = [name];
 }
 </script>
 <style>
