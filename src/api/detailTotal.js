@@ -1,5 +1,5 @@
 var fly = require("flyio");
-fly.config.timeout = 10000;
+// fly.config.timeout = 10000;
 
 // 获取微视数据列表
 export function getWsDataList(params) {
@@ -19,3 +19,9 @@ export function getBusinessItem(advId) {
 }
 
 // 导入excel
+/* export function inputExcel(file, advId) {
+  return fly.post("/api/advertising/inputExcel", {
+    file,
+    advId
+  });
+} */

@@ -1,6 +1,6 @@
 var fly = require("flyio");
-fly.config.timeout = 10000;
-
+/* fly.config.timeout = 10000;
+fly.config.baseURL = "123"; */
 // 获取广告列表
 export function getAdList() {
   return fly.get("/api/advertising/getAdvertisingList");

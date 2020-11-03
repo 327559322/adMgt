@@ -105,6 +105,7 @@
 <script>
 import { reactive, toRefs, inject } from "vue";
 import { useRouter } from "vue-router";
+import { message } from "ant-design-vue";
 import {
   PlusOutlined,
   LoadingOutlined,
@@ -133,17 +134,7 @@ export default {
   setup() {
     router = useRouter();
     changeMenuRoute = inject("changeMenuRoute");
-    getAdList()
-      .then(res => {
-        data.tableData = res.data.data.map((res, index) => {
-          return {
-            key: index,
-            ...res
-          };
-        });
-        console.log(data);
-      })
-      .catch(e => console.log("error", e));
+    qryAdList();
     return {
       ...toRefs(data),
       popWin,
@@ -196,6 +187,19 @@ const data = reactive({
 const popFormTmp = _.cloneDeep(data.popForm); // 弹窗变量备份
 let router;
 let changeMenuRoute;
+function qryAdList() {
+  getAdList()
+    .then(res => {
+      data.tableData = res.data.data.map((res, index) => {
+        return {
+          key: index,
+          ...res
+        };
+      });
+      console.log(data);
+    })
+    .catch(e => console.log("error", e));
+}
 // 弹出新建/编辑窗口
 function popWin(isEdit, itemData) {
   data.popForm = _.cloneDeep(popFormTmp);
@@ -227,12 +231,13 @@ function handleOk() {
       console.log(res);
       data.visible = false;
       data.confirmLoading = false;
+      message.success(`更新成功`);
     });
   } else {
     addAd(data.popForm).then(res => {
       console.log(res);
       if (res.data.data === true) {
-        alert("添加成功");
+        message.success(`添加成功`);
       }
       data.visible = false;
       data.confirmLoading = false;
@@ -273,12 +278,10 @@ function beforeUpload(file) {
   const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
   if (!isJpgOrPng) {
     alert("You can only upload JPG file!");
-    // this.$message.error("You can only upload JPG file!");
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
     alert("Image must smaller than 2MB!");
-    // this.$message.error("Image must smaller than 2MB!");
   }
   return isJpgOrPng && isLt2M;
 }
@@ -313,6 +316,8 @@ function deleteOk() {
     console.log(res);
     data.isPopDelete = false;
     data.deleteLoading = false;
+    message.success("删除成功");
+    qryAdList();
   });
 }
 function goToTotal(record) {

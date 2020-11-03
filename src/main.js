@@ -3,6 +3,9 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import { initAntd } from "./antd";
+var fly = require("flyio");
+fly.config.timeout = 10000;
+fly.config.baseURL = "";
 const app = createApp(App)
   .use(store)
   .use(router);
