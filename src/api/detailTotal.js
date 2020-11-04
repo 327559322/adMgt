@@ -1,6 +1,5 @@
 var fly = require("flyio");
 // fly.config.timeout = 10000;
-
 // 获取微视数据列表
 export function getWsDataList(params) {
   return fly.get("/api/advertising/getList", params);

@@ -10,7 +10,7 @@
           v-model:fileList="fileList"
           name="file"
           :multiple="true"
-          action="/api/advertising/inputExcel"
+          :action="'/api/advertising/inputExcel/' + advId"
           @change="handleChange"
         >
           <a-button> <upload-outlined />excel导入</a-button>
@@ -82,6 +82,7 @@ import dayjs from "dayjs";
 var moment = require("moment");
 const data = reactive({
   adName: "",
+  advId: "",
   fileList: [],
   wsDataDateRange: [],
   adBusDataDateRange: [],
@@ -159,6 +160,7 @@ export default {
     onMounted(() => {
       route = useRoute();
       data.adName = route.query.name || "";
+      data.advId = route.query.id;
       const last7Day = dayjs()
         .subtract(7, "day")
         .format("YYYY-MM-DD")

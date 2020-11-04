@@ -20,6 +20,12 @@ export const routes = [
           import(/* webpackChunkName: "dataTotal" */ "../views/dataTotal.vue")
       }
     ]
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: () =>
+      import(/* webpackChunkName: "newAd" */ "../views/login.vue")
   }
 ];
 

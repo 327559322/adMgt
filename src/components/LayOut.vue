@@ -75,7 +75,7 @@ export default {
     data.selectedKeys = [route.name];
     const routeList = computed(() => {
       return routes[0].children.filter(item => {
-        if (item.name === "root") {
+        if (item.name === "数据统计") {
           return false;
         } else {
           return true;
