@@ -9,7 +9,8 @@ import {
   Upload,
   DatePicker,
   Select,
-  message
+  message,
+  InputNumber
 } from "ant-design-vue";
 
 export function initAntd(app) {
@@ -24,6 +25,7 @@ export function initAntd(app) {
     .use(DatePicker)
     .use(Select)
     .use(message)
+    .use(InputNumber)
     .use(Menu);
   app.config.globalProperties.$message = message;
 }

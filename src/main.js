@@ -4,9 +4,7 @@ import router from "./router";
 import store from "./store";
 import { initAntd } from "./antd";
 import "./permission";
-var fly = require("flyio");
-fly.config.timeout = 10000;
-fly.config.baseURL = "";
+import "./require.js";
 const app = createApp(App)
   .use(store)
   .use(router);

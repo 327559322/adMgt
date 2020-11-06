@@ -32,6 +32,9 @@
         <a-form-item label="互动游戏：">
           <img class="game-img" :src="popForm.interactiveGame" />
         </a-form-item>
+        <a-form-item label="游戏次数：">
+          <a-input-number v-model:value="popForm.dayLimit" :min="1" :max="9" />
+        </a-form-item>
         <a-form-item label="活动规则：">
           <a-textarea
             v-model:value="popForm.ruleOfActivity"
@@ -172,6 +175,7 @@ const data = reactive({
   ],
   tableData: [],
   popForm: {
+    dayLimit: 8,
     businessList: [
       {
         businessName: "",
@@ -209,6 +213,7 @@ function popWin(isEdit, itemData) {
       console.log(res);
       data.popForm["advId"] = res.data.data.advId;
       data.popForm["advName"] = res.data.data.advName;
+      data.popForm["dayLimit"] = res.data.data.dayLimit || 8;
       data.popForm["ruleOfActivity"] = res.data.data.ruleOfActivity || "";
       data.popForm.businessList = res.data.restsData.map(res => {
         return {
