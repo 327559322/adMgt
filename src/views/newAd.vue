@@ -30,7 +30,7 @@
           <a-input v-model:value="popForm.advName" />
         </a-form-item>
         <a-form-item label="互动游戏：">
-          <img class="game-img" :src="popForm.interactiveGame" />
+          <img class="game-img" src="../assets/game.jpg" />
         </a-form-item>
         <a-form-item label="活动规则：">
           <a-textarea
@@ -79,7 +79,7 @@
             </a-upload>
             <MinusCircleOutlined
               class="delete-icon"
-              @click="deleteAdItem(index, item.businessId)"
+              @click="popDelete(item.businessId, index)"
               v-if="index !== 0"
             />
           </div>
@@ -97,7 +97,7 @@
       :confirm-loading="deleteLoading"
       @ok="deleteOk"
     >
-      <p>是否删除？</p>
+      <p>{{ visible ? "是否删除该广告主？" : "是否删除该广告？" }}</p>
     </a-modal>
   </div>
 </template>
@@ -132,6 +132,7 @@ export default {
     MinusCircleOutlined
   },
   setup() {
+    console.log(data.popForm);
     router = useRouter();
     changeMenuRoute = inject("changeMenuRoute");
     qryAdList();
@@ -155,6 +156,7 @@ const data = reactive({
   deleteLoading: false, // 删除请求中标识
   isEdit: false, // 是否是编辑状态
   deleteItemId: "",
+  deleteItemIndex: "",
   columns: [
     // 表格字段
     {
@@ -174,6 +176,7 @@ const data = reactive({
   popForm: {
     businessList: [
       {
+        businessId: "",
         businessName: "",
         landingPage: "",
         fileList: [],
@@ -196,7 +199,6 @@ function qryAdList() {
           ...res
         };
       });
-      console.log(data);
     })
     .catch(e => console.log("error", e));
 }
@@ -206,16 +208,18 @@ function popWin(isEdit, itemData) {
   data.isEdit = isEdit;
   if (isEdit) {
     qryAdDetail(itemData.advId).then(res => {
-      console.log(res);
       data.popForm["advId"] = res.data.data.advId;
       data.popForm["advName"] = res.data.data.advName;
       data.popForm["ruleOfActivity"] = res.data.data.ruleOfActivity || "";
-      data.popForm.businessList = res.data.restsData.map(res => {
+      data.popForm.businessList = res.data.restsData.map((res, index) => {
         return {
           businessId: res.businessId,
           businessName: res.businessName,
           landingPage: res.landingPage,
-          displayMaterial: res.displayMaterial
+          displayMaterial: res.displayMaterial,
+          fileList: [],
+          loading: false,
+          handleChange: getHandleChange(index)
         };
       });
     });
@@ -224,18 +228,15 @@ function popWin(isEdit, itemData) {
 }
 // 新建/更新
 function handleOk() {
-  console.log(data.popForm);
   data.confirmLoading = true;
   if (data.isEdit) {
     updateAd(data.popForm).then(res => {
-      console.log(res);
       data.visible = false;
       data.confirmLoading = false;
       message.success(`更新成功`);
     });
   } else {
     addAd(data.popForm).then(res => {
-      console.log(res);
       if (res.data.data === true) {
         message.success(`添加成功`);
       }
@@ -247,7 +248,6 @@ function handleOk() {
 // 获取图片上传处理函数
 function getHandleChange(index) {
   return function handleChange(info) {
-    console.log(info);
     if (info.file.status === "uploading") {
       data.popForm.businessList[index].loading = true;
       return;
@@ -287,10 +287,11 @@ function beforeUpload(file) {
 }
 // 删除广告主项
 function deleteAdItem(index, id) {
-  data.popForm.businessList.splice(index, 1);
+  popDelete(id);
+  /* data.popForm.businessList.splice(index, 1);
   deleteAdBusiness(id).then(res => {
     console.log(res);
-  });
+  }); */
 }
 // 添加广告主项
 function addAdItem() {
@@ -305,23 +306,37 @@ function addAdItem() {
   });
 }
 // 弹出删除提示框
-function popDelete(id) {
+function popDelete(id, index) {
   data.deleteItemId = id;
-  data.isPopDelete = true;
+  data.deleteItemIndex = index;
+  if (data.deleteItemId) {
+    data.isPopDelete = true;
+  } else if (data.visible) {
+    // 有弹窗说明删除的是广告主项
+    data.popForm.businessList.splice(index, 1);
+  }
 }
 // 点击确认删除
 function deleteOk() {
   data.deleteLoading = true;
-  deleteAd(data.deleteItemId).then(res => {
-    console.log(res);
-    data.isPopDelete = false;
-    data.deleteLoading = false;
-    message.success("删除成功");
-    qryAdList();
-  });
+  if (data.visible) {
+    // 有弹窗说明删除的是广告主项
+    data.popForm.businessList.splice(data.deleteItemIndex, 1);
+    deleteAdBusiness(data.deleteItemId).then(res => {
+      data.isPopDelete = false;
+      data.deleteLoading = false;
+      message.success("删除成功");
+    });
+  } else {
+    deleteAd(data.deleteItemId).then(res => {
+      data.isPopDelete = false;
+      data.deleteLoading = false;
+      message.success("删除成功");
+      qryAdList();
+    });
+  }
 }
 function goToTotal(record) {
-  console.log(record);
   router.push({
     path: "dataTotal",
     query: {
@@ -342,7 +357,7 @@ function goToTotal(record) {
 }
 .game-img {
   width: 100px;
-  height: 100px;
+  height: 140px;
 }
 .ad-block {
   position: relative;

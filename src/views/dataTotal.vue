@@ -177,8 +177,9 @@ export default {
         moment(currentDay, "YYYY-MM-DD")
       ];
       getBusinessItem(route.query.id).then(res => {
-        console.log(res);
-        data.adOwnerSelect = res.data.data;
+        data.adOwnerSelect = [
+          { businessId: null, businessName: "全部广告主" }
+        ].concat(res.data.data);
         data.currentAdBus = data.adOwnerSelect[0]?.businessId;
         qryAdBusList(data.currentAdBus, last7Day, currentDay);
       });
@@ -236,7 +237,7 @@ function changeAdBusDataDate(date, dateStr) {
 // 查询广告主列表
 function qryAdBusList(businessId, startTime, endTime) {
   getAdBusData({
-    businessId,
+    ...(businessId ? { businessId } : { advId: route.query.id }),
     startTime,
     endTime
   }).then(res => {
