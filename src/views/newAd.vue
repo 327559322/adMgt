@@ -13,7 +13,7 @@
       </a-table>
     </div>
     <a-modal
-      title="新建广告"
+      :title="isEdit ? '编辑广告' : '新建广告'"
       v-model:visible="visible"
       dialogClass="ad-dialog"
       ok-text="确认"
