@@ -37,7 +37,7 @@
       <span style="margin-right:20px">广告主数据</span>
       <a-select
         v-model:value="currentAdBus"
-        style="width: 120px"
+        style="width: 200px"
         ref="select"
         @change="adBusChange"
       >
